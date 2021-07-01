@@ -1,4 +1,3 @@
-
 use std::time::Duration;
 
 use serialport::{Error, ErrorKind, Result, SerialPort, SerialPortType};
@@ -33,12 +32,12 @@ pub fn connect() -> Result<Box<dyn SerialPort>> {
         }
 
         match serialport::new(&port_visible.port_name, BAUD_RATE)
-                        .timeout(Duration::from_secs(TIMEOUT_S))
-                        .open() {
+            .timeout(Duration::from_secs(TIMEOUT_S))
+            .open()
+        {
             Ok(port) => return Ok(port),
             Err(err) => result = err,
         }
-
     }
 
     Err(result)

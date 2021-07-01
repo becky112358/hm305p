@@ -1,4 +1,3 @@
-
 use crate::common::{u16_get_u8_high, u16_get_u8_low, MESSAGE_LENGTH};
 
 const CRC_LENGTH: usize = 2;
