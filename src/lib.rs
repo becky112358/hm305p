@@ -16,5 +16,5 @@ pub fn set_voltage(voltage_mv: u16) {
     message[INDEX_CONTROL_COMMAND_1] = VALUE_SET_VOLTAGE_1;
     voltage::set(voltage_mv, &mut message);
     crc::fill(&mut message);
-    port.write(&message);
+    port.write(&message).unwrap();
 }
