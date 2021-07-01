@@ -1,5 +1,5 @@
 
-use crate::common::MESSAGE_LENGTH;
+use crate::common::{u16_get_u8_high, u16_get_u8_low, MESSAGE_LENGTH};
 
 const CRC_LENGTH: usize = 2;
 
@@ -19,8 +19,8 @@ pub fn fill(message: &mut [u8; MESSAGE_LENGTH]) {
         }
     }
 
-    message[6] = (crc & 0x00ff) as u8;
-    message[7] = (crc >> 8) as u8;
+    message[6] = u16_get_u8_low(crc);
+    message[7] = u16_get_u8_high(crc);
 }
 
 #[cfg(test)]
