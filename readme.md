@@ -13,4 +13,4 @@ Driver for the HANMATEK HM305P DC Power Supply.
 	+ Set over power protect value
 
 ## Acknowledgements
-Thank you to James of [NightFlyerFireworks.com](http://nightflyerfireworks.com/) for saving me several hours in figuring out how to control the HM305P power supply.
+Thank you to James of [NightFlyerFireworks.com](http://nightflyerfireworks.com/) for saving me many hours in figuring out how to control the HM305P power supply.

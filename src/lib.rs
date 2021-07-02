@@ -7,10 +7,12 @@ use crate::common::{
 mod crc;
 mod current;
 mod port;
+mod result;
+pub use result::Hm305pError;
 mod voltage;
 
-pub fn set_current(current_ma: u16) {
-    let mut port = port::connect().unwrap();
+pub fn set_current(current_ma: u16) -> Result<(), Hm305pError> {
+    let mut port = port::connect()?;
     let mut message = [0; MESSAGE_LENGTH];
     message[INDEX_ADDRESS] = VALUE_ADDRESS;
     message[INDEX_READ_WRITE] = VALUE_WRITE;
@@ -18,11 +20,13 @@ pub fn set_current(current_ma: u16) {
     message[INDEX_CONTROL_COMMAND_1] = VALUE_SET_CURRENT_1;
     current::set(current_ma, &mut message);
     crc::fill(&mut message);
-    port.write(&message).unwrap();
+    port.write(&message)?;
+
+    Ok(())
 }
 
-pub fn set_voltage(voltage_mv: u16) {
-    let mut port = port::connect().unwrap();
+pub fn set_voltage(voltage_mv: u16) -> Result<(), Hm305pError> {
+    let mut port = port::connect()?;
     let mut message = [0; MESSAGE_LENGTH];
     message[INDEX_ADDRESS] = VALUE_ADDRESS;
     message[INDEX_READ_WRITE] = VALUE_WRITE;
@@ -30,5 +34,7 @@ pub fn set_voltage(voltage_mv: u16) {
     message[INDEX_CONTROL_COMMAND_1] = VALUE_SET_VOLTAGE_1;
     voltage::set(voltage_mv, &mut message);
     crc::fill(&mut message);
-    port.write(&message).unwrap();
+    port.write(&message)?;
+
+    Ok(())
 }
