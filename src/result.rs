@@ -1,5 +1,6 @@
 use std::io;
 
+#[derive(Debug)]
 pub enum Hm305pError {
     IoError(io::Error),
     SerialPortError(serialport::Error),
