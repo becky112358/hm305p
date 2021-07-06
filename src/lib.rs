@@ -33,6 +33,8 @@ pub fn set_current(current_ma: u16) -> Result<(), Hm305pError> {
     current::set(current_ma, &mut message);
     crc::fill(&mut message);
     port.write(&message)?;
+    let response = port::read(&mut port)?;
+    message::verify_write(response)?;
 
     Ok(())
 }
@@ -45,7 +47,8 @@ pub fn set_voltage(voltage_mv: u16) -> Result<(), Hm305pError> {
     voltage::set(voltage_mv, &mut message);
     crc::fill(&mut message);
     port.write(&message)?;
-    port::read(&mut port)?;
+    let response = port::read(&mut port)?;
+    message::verify_write(response)?;
 
     Ok(())
 }

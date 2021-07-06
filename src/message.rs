@@ -39,6 +39,22 @@ pub fn verify_read(response: [u8; MESSAGE_LENGTH]) -> Result<(), Hm305pError> {
     Ok(())
 }
 
+pub fn verify_write(response: [u8; MESSAGE_LENGTH]) -> Result<(), Hm305pError> {
+    if response[INDEX_ADDRESS] != VALUE_ADDRESS
+        || response[INDEX_READ_WRITE] != VALUE_WRITE
+        || response[2] != 0 {
+        return Err(Hm305pError::new(ErrorKind::UnexpectedResponse, "Unexpected response from power supply"));
+    }
+
+    let crc = compute(&response, MESSAGE_LENGTH);
+
+    if response[6] != u16_get_u8_low(crc) || response[7] != u16_get_u8_high(crc) {
+        return Err(Hm305pError::new(ErrorKind::InvalidCrc, "Power supply CRC is invalid"));
+    }
+
+    Ok(())
+}
+
 #[cfg(test)]
 #[path = "./test_message.rs"]
 mod test_message;

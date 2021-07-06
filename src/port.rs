@@ -48,7 +48,6 @@ pub fn connect() -> Result<Box<dyn SerialPort>> {
 pub fn read(port: &mut Box<dyn SerialPort>) -> Result<[u8; MESSAGE_LENGTH]> {
     let mut output = [0; MESSAGE_LENGTH];
     port.read(&mut output)?;
-    println!("{:?}", output);
 
     Ok(output)
 }

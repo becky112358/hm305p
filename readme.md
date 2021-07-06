@@ -1,10 +1,9 @@
 Driver for the HANMATEK HM305P DC Power Supply.
 
 ## todo
-* After sending a write command to the power supply, the power supply response should be read to confirm that the command was successful
+* Result handling should be improved
 * Add features:
     + Switch on / off
-	+ Read voltage
 	+ Read current
 	+ Read on / off status
 	+ Set over voltage protect value
