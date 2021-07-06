@@ -2,6 +2,8 @@ use std::time::Duration;
 
 use serialport::{Error, ErrorKind, Result, SerialPort, SerialPortType};
 
+use crate::common::MESSAGE_LENGTH;
+
 const MANUFACTURER: &str = "wch.cn";
 const PRODUCT: &str = "USB-SERIAL CH340";
 
@@ -41,4 +43,12 @@ pub fn connect() -> Result<Box<dyn SerialPort>> {
     }
 
     Err(result)
+}
+
+pub fn read(port: &mut Box<dyn SerialPort>) -> Result<[u8; MESSAGE_LENGTH]> {
+    let mut output = [0; MESSAGE_LENGTH];
+    port.read(&mut output)?;
+    println!("{:?}", output);
+
+    Ok(output)
 }

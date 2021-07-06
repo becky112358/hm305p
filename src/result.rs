@@ -4,6 +4,28 @@ use std::io;
 pub enum Hm305pError {
     IoError(io::Error),
     SerialPortError(serialport::Error),
+    LocalError(Error),
+}
+
+#[derive(Debug)]
+pub struct Error {
+    pub kind: ErrorKind,
+    pub description: String,
+}
+
+#[derive(Debug)]
+pub enum ErrorKind {
+    InvalidCrc,
+    UnexpectedResponse,
+}
+
+impl Hm305pError {
+    pub fn new(kind: ErrorKind, description: &str) -> Self {
+        Hm305pError::LocalError(Error {
+            kind,
+            description: description.to_string(),
+        })
+    }
 }
 
 impl From<io::Error> for Hm305pError {
