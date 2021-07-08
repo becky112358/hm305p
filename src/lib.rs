@@ -1,6 +1,7 @@
 mod common;
 use crate::common::{
-    INDEX_CONTROL_COMMAND_0, INDEX_CONTROL_COMMAND_1, VALUE_GET_VOLTAGE_0, VALUE_GET_VOLTAGE_1,
+    INDEX_CONTROL_COMMAND_0, INDEX_CONTROL_COMMAND_1, INDEX_SET_VALUE_LOW,
+    VALUE_GET_VOLTAGE_0, VALUE_GET_VOLTAGE_1, VALUE_POWER_SWITCH_0, VALUE_POWER_SWITCH_1,
     VALUE_SET_CURRENT_0, VALUE_SET_CURRENT_1, VALUE_SET_VOLTAGE_0, VALUE_SET_VOLTAGE_1,
 };
 mod crc;
@@ -45,6 +46,33 @@ pub fn set_voltage(voltage_mv: u16) -> Result<(), Hm305pError> {
     message[INDEX_CONTROL_COMMAND_0] = VALUE_SET_VOLTAGE_0;
     message[INDEX_CONTROL_COMMAND_1] = VALUE_SET_VOLTAGE_1;
     voltage::set(voltage_mv, &mut message);
+    crc::fill(&mut message);
+    port.write(&message)?;
+    let response = port::read(&mut port)?;
+    message::verify_write(response)?;
+
+    Ok(())
+}
+
+pub fn switch_on() -> Result<(), Hm305pError> {
+    let mut port = port::connect()?;
+    let mut message = message::init_write();
+    message[INDEX_CONTROL_COMMAND_0] = VALUE_POWER_SWITCH_0;
+    message[INDEX_CONTROL_COMMAND_1] = VALUE_POWER_SWITCH_1;
+    message[INDEX_SET_VALUE_LOW] = 0x01;
+    crc::fill(&mut message);
+    port.write(&message)?;
+    let response = port::read(&mut port)?;
+    message::verify_write(response)?;
+
+    Ok(())
+}
+
+pub fn switch_off() -> Result<(), Hm305pError> {
+    let mut port = port::connect()?;
+    let mut message = message::init_write();
+    message[INDEX_CONTROL_COMMAND_0] = VALUE_POWER_SWITCH_0;
+    message[INDEX_CONTROL_COMMAND_1] = VALUE_POWER_SWITCH_1;
     crc::fill(&mut message);
     port.write(&message)?;
     let response = port::read(&mut port)?;

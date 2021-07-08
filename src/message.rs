@@ -43,7 +43,8 @@ pub fn verify_write(response: [u8; MESSAGE_LENGTH]) -> Result<(), Hm305pError> {
     if response[INDEX_ADDRESS] != VALUE_ADDRESS
         || response[INDEX_READ_WRITE] != VALUE_WRITE
         || response[2] != 0 {
-        return Err(Hm305pError::new(ErrorKind::UnexpectedResponse, "Unexpected response from power supply"));
+        let text = format!("Power supply response: {:?}", response);
+        return Err(Hm305pError::new(ErrorKind::UnexpectedResponse, &text));
     }
 
     let crc = compute(&response, MESSAGE_LENGTH);

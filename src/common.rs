@@ -5,10 +5,8 @@ pub const INDEX_ADDRESS: usize = 0;
 pub const INDEX_READ_WRITE: usize = 1;
 pub const INDEX_CONTROL_COMMAND_0: usize = 2;
 pub const INDEX_CONTROL_COMMAND_1: usize = 3;
-pub const INDEX_CURRENT_HIGH: usize = 4;
-pub const INDEX_CURRENT_LOW: usize = 5;
-pub const INDEX_VOLTAGE_HIGH: usize = 4;
-pub const INDEX_VOLTAGE_LOW: usize = 5;
+pub const INDEX_SET_VALUE_HIGH: usize = 4;
+pub const INDEX_SET_VALUE_LOW: usize = 5;
 
 pub const VALUE_ADDRESS: u8 = 0x01;
 pub const VALUE_READ: u8 = 0x03;
@@ -19,6 +17,8 @@ pub const VALUE_SET_CURRENT_0: u8 = 0x00;
 pub const VALUE_SET_CURRENT_1: u8 = 0x31;
 pub const VALUE_SET_VOLTAGE_0: u8 = 0x00;
 pub const VALUE_SET_VOLTAGE_1: u8 = 0x30;
+pub const VALUE_POWER_SWITCH_0: u8 = 0x00;
+pub const VALUE_POWER_SWITCH_1: u8 = 0x01;
 
 pub fn u8_high_low_get_u16(u8_high: u8, u8_low: u8) -> u16 {
     u8_high_get_u16(u8_high) + u8_low_get_u16(u8_low)
