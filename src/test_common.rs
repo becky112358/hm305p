@@ -1,6 +1,21 @@
 use crate::common::*;
 
 #[test]
+fn test_u8_high_low_get_u16() {
+    assert_eq!(0x198a, u8_high_low_get_u16(0x19, 0x8a));
+}
+
+#[test]
+fn test_u8_high_get_u16() {
+    assert_eq!(0x0b00, u8_high_get_u16(0x0b));
+}
+
+#[test]
+fn test_u8_low_get_u16() {
+    assert_eq!(0x00c8, u8_low_get_u16(0xc8));
+}
+
+#[test]
 fn test_u16_get_u8_high() {
     assert_eq!(0x00, u16_get_u8_high(0x0000));
     assert_eq!(0x44, u16_get_u8_high(0x4444));

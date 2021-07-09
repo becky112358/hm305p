@@ -1,9 +1,5 @@
 mod common;
-use crate::common::{
-    INDEX_CONTROL_COMMAND_0, INDEX_CONTROL_COMMAND_1, INDEX_SET_VALUE_LOW,
-    VALUE_GET_VOLTAGE_0, VALUE_GET_VOLTAGE_1, VALUE_POWER_SWITCH_0, VALUE_POWER_SWITCH_1,
-    VALUE_SET_CURRENT_0, VALUE_SET_CURRENT_1, VALUE_SET_VOLTAGE_0, VALUE_SET_VOLTAGE_1,
-};
+use crate::common::{Action, Request};
 mod crc;
 mod current;
 mod message;
@@ -13,70 +9,29 @@ pub use result::Hm305pError;
 mod voltage;
 
 pub fn get_voltage_mv() -> Result<u16, Hm305pError> {
-    let mut port = port::connect()?;
-    let mut message = message::init_read();
-    message[INDEX_CONTROL_COMMAND_0] = VALUE_GET_VOLTAGE_0;
-    message[INDEX_CONTROL_COMMAND_1] = VALUE_GET_VOLTAGE_1;
-    crc::fill(&mut message);
-    port.write(&message)?;
-    let response = port::read(&mut port)?;
-    message::verify_read(response)?;
-    let voltage_mv = voltage::get(response);
-
-    Ok(voltage_mv)
+    message::send_and_receive(Request::Read(Action::VoltagemV))
 }
 
 pub fn set_current(current_ma: u16) -> Result<(), Hm305pError> {
-    let mut port = port::connect()?;
-    let mut message = message::init_write();
-    message[INDEX_CONTROL_COMMAND_0] = VALUE_SET_CURRENT_0;
-    message[INDEX_CONTROL_COMMAND_1] = VALUE_SET_CURRENT_1;
-    current::set(current_ma, &mut message);
-    crc::fill(&mut message);
-    port.write(&message)?;
-    let response = port::read(&mut port)?;
-    message::verify_write(response)?;
+    let _ = message::send_and_receive(Request::Write((Action::CurrentmA, current_ma)))?;
 
     Ok(())
 }
 
 pub fn set_voltage(voltage_mv: u16) -> Result<(), Hm305pError> {
-    let mut port = port::connect()?;
-    let mut message = message::init_write();
-    message[INDEX_CONTROL_COMMAND_0] = VALUE_SET_VOLTAGE_0;
-    message[INDEX_CONTROL_COMMAND_1] = VALUE_SET_VOLTAGE_1;
-    voltage::set(voltage_mv, &mut message);
-    crc::fill(&mut message);
-    port.write(&message)?;
-    let response = port::read(&mut port)?;
-    message::verify_write(response)?;
+    let _ = message::send_and_receive(Request::Write((Action::VoltagemV, voltage_mv)))?;
 
     Ok(())
 }
 
 pub fn switch_on() -> Result<(), Hm305pError> {
-    let mut port = port::connect()?;
-    let mut message = message::init_write();
-    message[INDEX_CONTROL_COMMAND_0] = VALUE_POWER_SWITCH_0;
-    message[INDEX_CONTROL_COMMAND_1] = VALUE_POWER_SWITCH_1;
-    message[INDEX_SET_VALUE_LOW] = 0x01;
-    crc::fill(&mut message);
-    port.write(&message)?;
-    let response = port::read(&mut port)?;
-    message::verify_write(response)?;
+    let _ = message::send_and_receive(Request::Write((Action::OnOff, 0x0001)))?;
 
     Ok(())
 }
 
 pub fn switch_off() -> Result<(), Hm305pError> {
-    let mut port = port::connect()?;
-    let mut message = message::init_write();
-    message[INDEX_CONTROL_COMMAND_0] = VALUE_POWER_SWITCH_0;
-    message[INDEX_CONTROL_COMMAND_1] = VALUE_POWER_SWITCH_1;
-    crc::fill(&mut message);
-    port.write(&message)?;
-    let response = port::read(&mut port)?;
-    message::verify_write(response)?;
+    let _ = message::send_and_receive(Request::Write((Action::OnOff, 0x0000)))?;
 
     Ok(())
 }
