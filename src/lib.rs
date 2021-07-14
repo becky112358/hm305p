@@ -8,6 +8,10 @@ mod result;
 pub use result::Hm305pError;
 mod voltage;
 
+pub fn get_current_ma() -> Result<u16, Hm305pError> {
+    message::send_and_receive(Request::Read(Action::CurrentmA))
+}
+
 pub fn get_voltage_mv() -> Result<u16, Hm305pError> {
     message::send_and_receive(Request::Read(Action::VoltagemV))
 }

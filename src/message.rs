@@ -19,6 +19,10 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
     };
 
     match request {
+        Request::Read(Action::CurrentmA) => {
+            message[INDEX_CONTROL_COMMAND_0] = 0x00;
+            message[INDEX_CONTROL_COMMAND_1] = 0x11;
+        },
         Request::Read(Action::VoltagemV) => {
             message[INDEX_CONTROL_COMMAND_0] = 0x00;
             message[INDEX_CONTROL_COMMAND_1] = 0x10;
@@ -58,6 +62,10 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
     }
 
     match request {
+        Request::Read(Action::CurrentmA) => {
+            let current_ma = current::get(response);
+            return Ok(current_ma)
+        }
         Request::Read(Action::VoltagemV) => {
             let voltage_mv = voltage::get(response);
             return Ok(voltage_mv)
