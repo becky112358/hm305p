@@ -6,7 +6,7 @@ use crate::common::{
 use crate::crc;
 use crate::current;
 use crate::port;
-use crate::result::{Hm305pError, ErrorKind};
+use crate::result::Hm305pError;
 use crate::voltage;
 
 pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
@@ -79,13 +79,13 @@ fn verify_read(response: [u8; MESSAGE_LENGTH]) -> Result<(), Hm305pError> {
     if response[INDEX_ADDRESS] != VALUE_ADDRESS
         || response[INDEX_READ_WRITE] != VALUE_READ
         || response[2] != 2 {
-        return Err(Hm305pError::new(ErrorKind::UnexpectedResponse, "Unexpected response from power supply"));
+        return Err(Hm305pError::UnexpectedResponse(response))
     }
 
     let crc = crc::compute(&response, READ_RESPONSE_LENGTH);
 
     if response[5] != u16_get_u8_low(crc) || response[6] != u16_get_u8_high(crc) {
-        return Err(Hm305pError::new(ErrorKind::InvalidCrc, "Power supply CRC is invalid"));
+        return Err(Hm305pError::InvalidCrc)
     }
 
     Ok(())
@@ -95,14 +95,13 @@ fn verify_write(response: [u8; MESSAGE_LENGTH]) -> Result<(), Hm305pError> {
     if response[INDEX_ADDRESS] != VALUE_ADDRESS
         || response[INDEX_READ_WRITE] != VALUE_WRITE
         || response[2] != 0 {
-        let text = format!("Power supply response: {:?}", response);
-        return Err(Hm305pError::new(ErrorKind::UnexpectedResponse, &text));
+        return Err(Hm305pError::UnexpectedResponse(response));
     }
 
     let crc = crc::compute(&response, MESSAGE_LENGTH);
 
     if response[6] != u16_get_u8_low(crc) || response[7] != u16_get_u8_high(crc) {
-        return Err(Hm305pError::new(ErrorKind::InvalidCrc, "Power supply CRC is invalid"));
+        return Err(Hm305pError::InvalidCrc);
     }
 
     Ok(())
