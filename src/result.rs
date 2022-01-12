@@ -20,6 +20,10 @@ impl From<Hm305pError> for io::Error {
     fn from(err: Hm305pError) -> io::Error {
         match err {
             Hm305pError::Io(e) => e,
+            Hm305pError::SerialPort(serialport::Error {
+                kind: serialport::ErrorKind::Io(inner),
+                ..
+            }) => io::Error::new(inner, err),
             _ => io::Error::new(io::ErrorKind::Other, err),
         }
     }
