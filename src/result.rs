@@ -19,7 +19,7 @@ pub enum Hm305pError {
 impl From<Hm305pError> for io::Error {
     fn from(err: Hm305pError) -> io::Error {
         match err {
-            Hm305pError::Io(e) => io::Error::new(e.kind(), e),
+            Hm305pError::Io(e) => e,
             _ => io::Error::new(io::ErrorKind::Other, err),
         }
     }
