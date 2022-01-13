@@ -1,6 +1,6 @@
 [package]
 name = "hm305p"
-version = "0.3.0"
+version = "1.0.0"
 description = "Driver for the HANMATEK HM305P DC Power Supply"
 license = "MIT"
 edition = "2018"
