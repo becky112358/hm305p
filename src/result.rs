@@ -19,7 +19,8 @@ pub enum Hm305pError {
 impl From<Hm305pError> for io::Error {
     fn from(err: Hm305pError) -> io::Error {
         match err {
-            Hm305pError::Io(e) => io::Error::new(e.kind(), e),
+            Hm305pError::Io(e) => e,
+            Hm305pError::SerialPort(inner) => io::Error::from(inner),
             _ => io::Error::new(io::ErrorKind::Other, err),
         }
     }
