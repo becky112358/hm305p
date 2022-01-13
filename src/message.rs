@@ -53,7 +53,7 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
     }
 
     crc::fill(&mut message);
-    port.write(&message)?;
+    port.write_all(&message)?;
     let response = port::read(&mut port)?;
 
     match request {
@@ -64,14 +64,14 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
     match request {
         Request::Read(Action::CurrentmA) => {
             let current_ma = current::get(response);
-            return Ok(current_ma)
+            Ok(current_ma)
         }
         Request::Read(Action::VoltagemV) => {
             let voltage_mv = voltage::get(response);
-            return Ok(voltage_mv)
+            Ok(voltage_mv)
         },
         Request::Read(_) => unimplemented!("Option has not yet been implemented"),
-        Request::Write(_) => return Ok(0),
+        Request::Write(_) => Ok(0)
     }
 }
 

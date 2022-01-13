@@ -12,8 +12,8 @@ pub fn fill(message: &mut [u8; MESSAGE_LENGTH]) {
 pub fn compute(message: &[u8; MESSAGE_LENGTH], length: usize) -> u16 {
     let mut crc = 0xffff;
 
-    for i in 0..(length - CRC_LENGTH) {
-        crc ^= message[i] as u16;
+    for item in message.iter().take(length - CRC_LENGTH) {
+        crc ^= *item as u16;
 
         for _ in 0..8 {
             if (crc & 0x0001) != 0 {
