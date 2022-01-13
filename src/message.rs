@@ -1,7 +1,7 @@
 use crate::common::{
-    u16_get_u8_high, u16_get_u8_low, Action, Request, INDEX_ADDRESS,
-    INDEX_CONTROL_COMMAND_0, INDEX_CONTROL_COMMAND_1, INDEX_READ_WRITE, INDEX_SET_VALUE_LOW,
-    MESSAGE_LENGTH, READ_RESPONSE_LENGTH, VALUE_ADDRESS, VALUE_READ, VALUE_WRITE
+    u16_get_u8_high, u16_get_u8_low, Action, Request, INDEX_ADDRESS, INDEX_CONTROL_COMMAND_0,
+    INDEX_CONTROL_COMMAND_1, INDEX_READ_WRITE, INDEX_SET_VALUE_LOW, MESSAGE_LENGTH,
+    READ_RESPONSE_LENGTH, VALUE_ADDRESS, VALUE_READ, VALUE_WRITE,
 };
 use crate::crc;
 use crate::current;
@@ -22,23 +22,23 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
         Request::Read(Action::CurrentmA) => {
             message[INDEX_CONTROL_COMMAND_0] = 0x00;
             message[INDEX_CONTROL_COMMAND_1] = 0x11;
-        },
+        }
         Request::Read(Action::VoltagemV) => {
             message[INDEX_CONTROL_COMMAND_0] = 0x00;
             message[INDEX_CONTROL_COMMAND_1] = 0x10;
-        },
+        }
         Request::Write((Action::CurrentmA, _)) => {
             message[INDEX_CONTROL_COMMAND_0] = 0x00;
             message[INDEX_CONTROL_COMMAND_1] = 0x31;
-        },
+        }
         Request::Write((Action::VoltagemV, _)) => {
             message[INDEX_CONTROL_COMMAND_0] = 0x00;
             message[INDEX_CONTROL_COMMAND_1] = 0x30;
-        },
+        }
         Request::Write((Action::OnOff, _)) => {
             message[INDEX_CONTROL_COMMAND_0] = 0x00;
             message[INDEX_CONTROL_COMMAND_1] = 0x01;
-        },
+        }
         _ => unimplemented!("Option has not yet been implemented"),
     }
 
@@ -46,7 +46,7 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
         Request::Read(_) => {
             message[4] = 0x00;
             message[5] = 0x01;
-        },
+        }
         Request::Write((Action::CurrentmA, value)) => current::set(value, &mut message),
         Request::Write((Action::OnOff, value)) => message[INDEX_SET_VALUE_LOW] = value as u8,
         Request::Write((Action::VoltagemV, value)) => voltage::set(value, &mut message),
@@ -69,23 +69,24 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
         Request::Read(Action::VoltagemV) => {
             let voltage_mv = voltage::get(response);
             Ok(voltage_mv)
-        },
+        }
         Request::Read(_) => unimplemented!("Option has not yet been implemented"),
-        Request::Write(_) => Ok(0)
+        Request::Write(_) => Ok(0),
     }
 }
 
 fn verify_read(response: [u8; MESSAGE_LENGTH]) -> Result<(), Hm305pError> {
     if response[INDEX_ADDRESS] != VALUE_ADDRESS
         || response[INDEX_READ_WRITE] != VALUE_READ
-        || response[2] != 2 {
-        return Err(Hm305pError::UnexpectedResponse(response))
+        || response[2] != 2
+    {
+        return Err(Hm305pError::UnexpectedResponse(response));
     }
 
     let crc = crc::compute(&response, READ_RESPONSE_LENGTH);
 
     if response[5] != u16_get_u8_low(crc) || response[6] != u16_get_u8_high(crc) {
-        return Err(Hm305pError::InvalidCrc)
+        return Err(Hm305pError::InvalidCrc);
     }
 
     Ok(())
@@ -94,7 +95,8 @@ fn verify_read(response: [u8; MESSAGE_LENGTH]) -> Result<(), Hm305pError> {
 fn verify_write(response: [u8; MESSAGE_LENGTH]) -> Result<(), Hm305pError> {
     if response[INDEX_ADDRESS] != VALUE_ADDRESS
         || response[INDEX_READ_WRITE] != VALUE_WRITE
-        || response[2] != 0 {
+        || response[2] != 0
+    {
         return Err(Hm305pError::UnexpectedResponse(response));
     }
 
@@ -107,6 +109,7 @@ fn verify_write(response: [u8; MESSAGE_LENGTH]) -> Result<(), Hm305pError> {
     Ok(())
 }
 
+#[rustfmt::skip]
 #[cfg(test)]
 #[path = "./test_message.rs"]
 mod test_message;
