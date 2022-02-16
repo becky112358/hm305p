@@ -4,8 +4,9 @@ use serialport::{Error, ErrorKind, Result, SerialPort, SerialPortType};
 
 use crate::common::MESSAGE_LENGTH;
 
-const MANUFACTURER: &str = "wch.cn";
-const PRODUCT: &str = "USB-SERIAL CH340";
+const MANUFACTURER_0: &str = "wch.cn";
+const MANUFACTURER_1: &str = "QinHeng Electronics";
+const PRODUCT: &str = "CH340";
 
 const BAUD_RATE: u32 = 9600;
 const TIMEOUT_S: u64 = 1;
@@ -20,7 +21,7 @@ pub fn connect() -> Result<Box<dyn SerialPort>> {
             SerialPortType::UsbPort(usb_port_info) => {
                 match (&usb_port_info.manufacturer, &usb_port_info.product) {
                     (Some(manufacturer), Some(product)) => {
-                        if !manufacturer.eq(MANUFACTURER) {
+                        if !manufacturer.eq(MANUFACTURER_0) && !manufacturer.eq(MANUFACTURER_1) {
                             continue;
                         }
                         if !product.contains(PRODUCT) {
