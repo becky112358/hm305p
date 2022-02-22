@@ -1,11 +1,12 @@
 [package]
 name = "hm305p"
-version = "1.1.0"
+version = "1.1.1"
 edition = "2018"
 description = "Driver for the HANMATEK HM305P DC Power Supply"
+repository = "https://github.com/becky112358/hm305p"
 license = "MIT"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+keywords = ["power-supply"]
+categories = ["hardware-support"]
 
 [dependencies]
 serialport = "4.0.0"
