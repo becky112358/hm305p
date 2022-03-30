@@ -28,7 +28,6 @@ pub fn compute(message: &[u8; MESSAGE_LENGTH], length: usize) -> u16 {
     crc
 }
 
-#[rustfmt::skip]
 #[cfg(test)]
 #[path = "./test_crc.rs"]
 mod test_crc;

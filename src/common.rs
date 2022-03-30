@@ -12,12 +12,14 @@ pub enum Action {
 pub const MESSAGE_LENGTH: usize = 8;
 pub const READ_RESPONSE_LENGTH: usize = 7;
 
-pub const INDEX_ADDRESS: usize = 0;
-pub const INDEX_READ_WRITE: usize = 1;
-pub const INDEX_CONTROL_COMMAND_0: usize = 2;
-pub const INDEX_CONTROL_COMMAND_1: usize = 3;
-pub const INDEX_SET_VALUE_HIGH: usize = 4;
-pub const INDEX_SET_VALUE_LOW: usize = 5;
+pub enum Index {
+    Address = 0,
+    ReadWrite = 1,
+    ControlCommand0 = 2,
+    ControlCommand1 = 3,
+    SetValueHigh = 4,
+    SetValueLow = 5,
+}
 
 pub const VALUE_ADDRESS: u8 = 0x01;
 pub const VALUE_READ: u8 = 0x03;
@@ -43,7 +45,6 @@ pub fn u16_get_u8_low(input: u16) -> u8 {
     (input & 0x00ff) as u8
 }
 
-#[rustfmt::skip]
 #[cfg(test)]
 #[path = "./test_common.rs"]
 mod test_common;
