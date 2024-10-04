@@ -26,7 +26,8 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x10;
         }
-        Request::Read(Action::OnOff) => {
+        Request::Read(Action::OnOff) |
+        Request::Write((Action::OnOff, _))=> {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x01;
         }
@@ -37,10 +38,6 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
         Request::Write((Action::VoltagemV, _)) => {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x30;
-        }
-        Request::Write((Action::OnOff, _)) => {
-            message[Index::ControlCommand0 as usize] = 0x00;
-            message[Index::ControlCommand1 as usize] = 0x01;
         }
     }
 
