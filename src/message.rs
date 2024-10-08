@@ -18,6 +18,10 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
     };
 
     match request {
+        Request::Read(Action::OnOff) | Request::Write((Action::OnOff, _)) => {
+            message[Index::ControlCommand0 as usize] = 0x00;
+            message[Index::ControlCommand1 as usize] = 0x01;
+        }
         Request::Read(Action::CurrentmA) => {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x11;
@@ -25,10 +29,6 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
         Request::Read(Action::VoltagemV) => {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x10;
-        }
-        Request::Read(Action::OnOff) | Request::Write((Action::OnOff, _)) => {
-            message[Index::ControlCommand0 as usize] = 0x00;
-            message[Index::ControlCommand1 as usize] = 0x01;
         }
         Request::Write((Action::CurrentmA, _)) => {
             message[Index::ControlCommand0 as usize] = 0x00;
@@ -45,10 +45,10 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
             message[4] = 0x00;
             message[5] = 0x01;
         }
-        Request::Write((Action::CurrentmA, value)) => current::set(value, &mut message),
         Request::Write((Action::OnOff, value)) => {
             message[Index::SetValueLow as usize] = value as u8
         }
+        Request::Write((Action::CurrentmA, value)) => current::set(value, &mut message),
         Request::Write((Action::VoltagemV, value)) => voltage::set(value, &mut message),
     }
 
@@ -62,6 +62,10 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
     }
 
     match request {
+        Request::Read(Action::OnOff) => {
+            let state = response[Index::SetValueHigh as usize] as u16;
+            Ok(state)
+        }
         Request::Read(Action::CurrentmA) => {
             let current_ma = current::get(response);
             Ok(current_ma)
@@ -69,10 +73,6 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
         Request::Read(Action::VoltagemV) => {
             let voltage_mv = voltage::get(response);
             Ok(voltage_mv)
-        }
-        Request::Read(Action::OnOff) => {
-            let state = response[Index::SetValueHigh as usize] as u16;
-            Ok(state)
         }
         Request::Write(_) => Ok(0),
     }
