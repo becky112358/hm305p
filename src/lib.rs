@@ -1,5 +1,5 @@
 mod common;
-use crate::common::{Action, Request};
+use crate::common::{Action, Request, State};
 mod crc;
 mod current;
 mod message;
@@ -7,6 +7,15 @@ mod port;
 mod result;
 pub use result::Hm305pError;
 mod voltage;
+
+pub fn get_switch_state() -> Result<State, Hm305pError> {
+    let state = message::send_and_receive(Request::Read(Action::OnOff))?;
+    match state {
+        0 => Ok(State::Off),
+        1 => Ok(State::On),
+        _ => Err(Hm305pError::InvalidState(state)),
+    }
+}
 
 /// Get the instantaneous current consumption, in mA
 pub fn get_current_ma() -> Result<u16, Hm305pError> {

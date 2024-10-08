@@ -18,6 +18,10 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
     };
 
     match request {
+        Request::Read(Action::OnOff) | Request::Write((Action::OnOff, _)) => {
+            message[Index::ControlCommand0 as usize] = 0x00;
+            message[Index::ControlCommand1 as usize] = 0x01;
+        }
         Request::Read(Action::CurrentmA) => {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x11;
@@ -25,10 +29,6 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
         Request::Read(Action::VoltagemV) => {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x10;
-        }
-        Request::Write((Action::OnOff, _)) => {
-            message[Index::ControlCommand0 as usize] = 0x00;
-            message[Index::ControlCommand1 as usize] = 0x01;
         }
         Request::Write((Action::CurrentmA, _)) => {
             message[Index::ControlCommand0 as usize] = 0x00;
@@ -38,7 +38,6 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x30;
         }
-        _ => unimplemented!("Option has not yet been implemented"),
     }
 
     match request {
@@ -63,6 +62,10 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
     }
 
     match request {
+        Request::Read(Action::OnOff) => {
+            let state = response[Index::SetValueHigh as usize] as u16;
+            Ok(state)
+        }
         Request::Read(Action::CurrentmA) => {
             let current_ma = current::get(response);
             Ok(current_ma)
@@ -71,7 +74,6 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
             let voltage_mv = voltage::get(response);
             Ok(voltage_mv)
         }
-        Request::Read(_) => unimplemented!("Option has not yet been implemented"),
         Request::Write(_) => Ok(0),
     }
 }

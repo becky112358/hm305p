@@ -29,3 +29,9 @@ fn test_u16_get_u8_low() {
     assert_eq!(0x9b, u16_get_u8_low(0x9c9b));
     assert_eq!(0x3f, u16_get_u8_low(0xc13f));
 }
+
+#[test]
+fn state_to_bool() {
+    assert_eq!(true, State::On.as_bool());
+    assert_eq!(false, State::Off.as_bool());
+}
