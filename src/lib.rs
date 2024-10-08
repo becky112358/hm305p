@@ -56,6 +56,15 @@ pub fn get_switch_state() -> Result<State, Hm305pError> {
     match state {
         0 => Ok(State::Off),
         1 => Ok(State::On),
-        _ => Err(Hm305pError::UnexpectedResponse([0, 0, 0, 0, 0, 0, 0, u16_get_u8_low(state)]))
+        _ => Err(Hm305pError::UnexpectedResponse([
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            u16_get_u8_low(state),
+        ])),
     }
 }
