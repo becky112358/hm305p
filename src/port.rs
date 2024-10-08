@@ -1,5 +1,6 @@
-use std::time::Duration;
 use std::env;
+use std::time::Duration;
+
 use serialport::{Error, ErrorKind, Result, SerialPort, SerialPortType};
 
 use crate::common::MESSAGE_LENGTH;
@@ -32,13 +33,15 @@ pub fn connect() -> Result<Box<dyn SerialPort>> {
                         continue;
                     }
                     if usb_port_info.pid != PRODUCT_ID_LINUX_1
-                        && usb_port_info.pid != PRODUCT_ID_LINUX_2 {
+                        && usb_port_info.pid != PRODUCT_ID_LINUX_2
+                    {
                         continue;
                     }
                 } else {
                     match (&usb_port_info.manufacturer, &usb_port_info.product) {
                         (Some(manufacturer), Some(product)) => {
-                            if !manufacturer.eq(MANUFACTURER_0) && !manufacturer.eq(MANUFACTURER_1) {
+                            if !manufacturer.eq(MANUFACTURER_0) && !manufacturer.eq(MANUFACTURER_1)
+                            {
                                 continue;
                             }
                             if !product.contains(PRODUCT) {
