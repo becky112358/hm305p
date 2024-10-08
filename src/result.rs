@@ -12,6 +12,8 @@ pub enum Hm305pError {
     SerialPort(#[from] serialport::Error),
     #[error("Power supply CRC is invalid")]
     InvalidCrc,
+    #[error("Power supply reports an invalid state: {0:}")]
+    InvalidState(u16),
     #[error("Unexpected response from power supply: {0:?}")]
     UnexpectedResponse([u8; MESSAGE_LENGTH]),
 }
