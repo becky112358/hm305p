@@ -8,13 +8,13 @@ use crate::common::MESSAGE_LENGTH;
 const MANUFACTURER_0: &str = "wch.cn";
 const MANUFACTURER_1: &str = "QinHeng Electronics";
 
-// see http://www.linux-usb.org/usb.ids for vendor id in hex 1A86
+// see http://www.linux-usb.org/usb.ids
 const VENDOR_ID_LINUX: u16 = 0x1A86;
 const PRODUCT: &str = "CH340";
 
-// see http://www.linux-usb.org/usb.ids for device id in hex 7522
+// see http://www.linux-usb.org/usb.ids
 const PRODUCT_ID_LINUX_1: u16 = 0x7523;
-// see http://www.linux-usb.org/usb.ids for device id in hex 7522
+// see http://www.linux-usb.org/usb.ids
 const PRODUCT_ID_LINUX_2: u16 = 0x7522;
 
 const BAUD_RATE: u32 = 9600;
