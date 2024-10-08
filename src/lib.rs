@@ -8,6 +8,15 @@ mod result;
 pub use result::Hm305pError;
 mod voltage;
 
+pub fn get_switch_state() -> Result<State, Hm305pError> {
+    let state = message::send_and_receive(Request::Read(Action::OnOff))?;
+    match state {
+        0 => Ok(State::Off),
+        1 => Ok(State::On),
+        _ => Err(Hm305pError::InvalidState(state)),
+    }
+}
+
 /// Get the instantaneous current consumption, in mA
 pub fn get_current_ma() -> Result<u16, Hm305pError> {
     message::send_and_receive(Request::Read(Action::CurrentmA))
@@ -18,6 +27,18 @@ pub fn get_current_ma() -> Result<u16, Hm305pError> {
 /// 10mV
 pub fn get_voltage_mv() -> Result<u16, Hm305pError> {
     message::send_and_receive(Request::Read(Action::VoltagemV))
+}
+
+pub fn switch_on() -> Result<(), Hm305pError> {
+    let _ = message::send_and_receive(Request::Write((Action::OnOff, 0x0001)))?;
+
+    Ok(())
+}
+
+pub fn switch_off() -> Result<(), Hm305pError> {
+    let _ = message::send_and_receive(Request::Write((Action::OnOff, 0x0000)))?;
+
+    Ok(())
 }
 
 /// Set the current limit, in mA
@@ -37,25 +58,4 @@ pub fn set_voltage_mv(voltage_mv: u16) -> Result<(), Hm305pError> {
     let _ = message::send_and_receive(Request::Write((Action::VoltagemV, voltage_mv)))?;
 
     Ok(())
-}
-
-pub fn switch_on() -> Result<(), Hm305pError> {
-    let _ = message::send_and_receive(Request::Write((Action::OnOff, 0x0001)))?;
-
-    Ok(())
-}
-
-pub fn switch_off() -> Result<(), Hm305pError> {
-    let _ = message::send_and_receive(Request::Write((Action::OnOff, 0x0000)))?;
-
-    Ok(())
-}
-
-pub fn get_switch_state() -> Result<State, Hm305pError> {
-    let state = message::send_and_receive(Request::Read(Action::OnOff))?;
-    match state {
-        0 => Ok(State::Off),
-        1 => Ok(State::On),
-        _ => Err(Hm305pError::InvalidState(state)),
-    }
 }
