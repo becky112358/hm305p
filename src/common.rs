@@ -9,7 +9,7 @@ pub enum Action {
     VoltagemV,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum State {
     Off = 0,
     On = 1,
