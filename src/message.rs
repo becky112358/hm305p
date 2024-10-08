@@ -26,6 +26,10 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x10;
         }
+        Request::Write((Action::OnOff, _)) => {
+            message[Index::ControlCommand0 as usize] = 0x00;
+            message[Index::ControlCommand1 as usize] = 0x01;
+        }
         Request::Write((Action::CurrentmA, _)) => {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x31;
@@ -33,10 +37,6 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
         Request::Write((Action::VoltagemV, _)) => {
             message[Index::ControlCommand0 as usize] = 0x00;
             message[Index::ControlCommand1 as usize] = 0x30;
-        }
-        Request::Write((Action::OnOff, _)) => {
-            message[Index::ControlCommand0 as usize] = 0x00;
-            message[Index::ControlCommand1 as usize] = 0x01;
         }
         _ => unimplemented!("Option has not yet been implemented"),
     }
@@ -46,10 +46,10 @@ pub fn send_and_receive(request: Request) -> Result<u16, Hm305pError> {
             message[4] = 0x00;
             message[5] = 0x01;
         }
-        Request::Write((Action::CurrentmA, value)) => current::set(value, &mut message),
         Request::Write((Action::OnOff, value)) => {
             message[Index::SetValueLow as usize] = value as u8
         }
+        Request::Write((Action::CurrentmA, value)) => current::set(value, &mut message),
         Request::Write((Action::VoltagemV, value)) => voltage::set(value, &mut message),
     }
 
