@@ -1,5 +1,5 @@
 mod common;
-use crate::common::{Action, Request};
+use crate::common::{u16_get_u8_low, Action, Request, State};
 mod crc;
 mod current;
 mod message;
@@ -49,4 +49,13 @@ pub fn switch_off() -> Result<(), Hm305pError> {
     let _ = message::send_and_receive(Request::Write((Action::OnOff, 0x0000)))?;
 
     Ok(())
+}
+
+pub fn get_switch_state() -> Result<State, Hm305pError> {
+    let state = message::send_and_receive(Request::Read(Action::OnOff))?;
+    match state {
+        0 => Ok(State::Off),
+        1 => Ok(State::On),
+        _ => Err(Hm305pError::UnexpectedResponse([0, 0, 0, 0, 0, 0, 0, u16_get_u8_low(state)]))
+    }
 }

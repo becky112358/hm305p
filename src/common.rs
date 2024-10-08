@@ -9,6 +9,21 @@ pub enum Action {
     VoltagemV,
 }
 
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum State {
+    Off = 0,
+    On = 1,
+}
+
+impl State {
+    pub fn as_bool(&self) -> bool {
+        match self {
+            State::Off => false,
+            State::On => true,
+        }
+    }
+}
+
 pub const MESSAGE_LENGTH: usize = 8;
 pub const READ_RESPONSE_LENGTH: usize = 7;
 
