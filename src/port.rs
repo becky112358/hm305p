@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use serialport::{Error, ErrorKind, Result, SerialPort, SerialPortType};
+use serialport::{ClearBuffer, Error, ErrorKind, Result, SerialPort, SerialPortType};
 
 use crate::common::MESSAGE_LENGTH;
 
@@ -55,7 +55,10 @@ pub fn connect() -> Result<Box<dyn SerialPort>> {
             .timeout(Duration::from_secs(TIMEOUT_S))
             .open()
         {
-            Ok(port) => return Ok(port),
+            Ok(port) => {
+                port.clear(ClearBuffer::All)?;
+                return Ok(port)
+            },
             Err(err) => result = err,
         }
     }
