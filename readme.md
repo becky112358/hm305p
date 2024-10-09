@@ -1,7 +1,6 @@
 Driver for the HANMATEK HM305P DC Power Supply.
 
 ## Features which could be added
-* Read on / off status
 * Set over voltage protect value
 * Set over current protect value
 * Set over power protect value
